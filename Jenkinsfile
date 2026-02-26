@@ -24,6 +24,20 @@ pipeline {
             sh "bash pipelines/PIPELINE-FULL-STAGING/setup.sh"
         }
     }
+
+    stage('Static Test') {
+        steps{
+            sh "bash pipelines/PIPELINE-FULL-STAGING/static_test.sh"
+            sh "bash pipelines/PIPELINE-FULL-STAGING/unit_test.sh"
+        }
+        post {
+            always {
+                recordIssues tools: [flake8(pattern: 'flake8.out')]
+                recordIssues tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')]
+                junit 'result-test.xml'
+            }
+        }
+    }
   }
 
 }
