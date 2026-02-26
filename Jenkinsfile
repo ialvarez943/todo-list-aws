@@ -44,9 +44,17 @@ pipeline {
         }
     }
 
+    stage("Build") {
+        steps{
+            echo "-------------------- Build --------------------"
+            sh "bash pipelines/common-steps/build.sh"
+        }
+    }
+
     stage("Deploy") {
         steps{
             echo "-------------------- Deploy --------------------"
+            sh "bash pipelines/common-steps/deploy.sh"
         }
     }
   }
