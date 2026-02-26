@@ -9,6 +9,7 @@ pipeline {
     ENVIRONMENT = 'staging'
     GIT_BRANCH = 'develop'
     GIT_URL = 'github.com/ialvarez943/todo-list-aws.git'
+    STACK_NAME = 'staging-todo-list-aws'
   }
 
   stages {
@@ -55,6 +56,18 @@ pipeline {
         steps{
             echo "-------------------- Deploy --------------------"
             sh "bash pipelines/common-steps/deploy.sh"
+        }
+    }
+
+    stage("Rest Test") {
+        steps{
+            echo "-------------------- Rest Test --------------------"
+            script {
+                def BASE_URL = sh( script: "aws cloudformation describe-stacks --stack-name ${env.STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' --region us-east-1 --output text",
+                    returnStdout: true)
+                echo "$BASE_URL"
+                sh "bash pipelines/common-steps/integration.sh $BASE_URL"
+            }
         }
     }
   }
