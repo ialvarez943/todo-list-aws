@@ -31,6 +31,7 @@ pipeline {
         steps{
             echo "-------------------- Static Test --------------------"
             sh "bash pipelines/PIPELINE-FULL-STAGING/static_test.sh"
+            echo "-------------------- Unit Test --------------------"
             sh "bash pipelines/PIPELINE-FULL-STAGING/unit_test.sh"
         }
         post {
