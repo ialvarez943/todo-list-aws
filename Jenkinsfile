@@ -69,6 +69,11 @@ pipeline {
                 sh "bash pipelines/common-steps/integration.sh $BASE_URL"
             }
         }
+        post {
+              always {
+                  junit 'result-integration.xml'
+              }
+        }
     }
   }
 
