@@ -36,10 +36,7 @@ pipeline {
         }
         post {
             always {
-                publishCoverage(
-                  failUnhealthy: true, 
-                  globalThresholds: [[thresholdTarget: 'Line', unhealthyThreshold: 70.0]], 
-                  adapters: [[$class: 'CoberturaReportAdapter', mergeToOneReport: true, path: 'coverage.xml']])
+                recordCoverage(tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']])
                 recordIssues(tools: [flake8(pattern: 'flake8.out')])
                 recordIssues(tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')])
                 junit 'result-test.xml'
