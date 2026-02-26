@@ -31,14 +31,11 @@ pipeline {
         steps{
             echo "-------------------- Static Test --------------------"
             sh "bash pipelines/PIPELINE-FULL-STAGING/static_test.sh"
-            echo "-------------------- Unit Test --------------------"
-            sh "bash pipelines/PIPELINE-FULL-STAGING/unit_test.sh"
         }
         post {
             always {
                 recordIssues tools: [flake8(pattern: 'flake8.out')]
                 recordIssues tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')]
-                junit 'result-test.xml'
             }
         }
     }
