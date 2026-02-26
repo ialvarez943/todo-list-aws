@@ -20,6 +20,7 @@ capabilities = "CAPABILITY_IAM"
 parameter_overrides = "Stage=\"staging\""
 image_repositories = []
 resolve_s3 = true
+confirm_changeset = false
 
 [production]
 [production.deploy]
@@ -31,3 +32,4 @@ capabilities = "CAPABILITY_IAM"
 parameter_overrides = "Stage=\"production\""
 image_repositories = []
 resolve_s3 = true
+confirm_changeset = false
