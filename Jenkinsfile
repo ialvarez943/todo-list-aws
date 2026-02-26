@@ -18,6 +18,12 @@ pipeline {
             stash name: 'code', includes: '**'
         }
     }
+
+    stage('Setup') {
+        steps{
+            sh "bash pipelines/PIPELINE-FULL-STAGING/setup.sh"
+        }
+    }
   }
 
 }
