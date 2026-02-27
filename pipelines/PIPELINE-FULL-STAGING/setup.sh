@@ -1,7 +1,8 @@
 #!/bin/bash
 
 set -x
-python3.7 -m venv todo-list-aws
+rm -rf todo-list-aws
+python3 -m venv todo-list-aws
 source todo-list-aws/bin/activate
 python -m pip install --upgrade pip
 #For static testing
