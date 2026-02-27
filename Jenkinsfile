@@ -90,7 +90,7 @@ pipeline {
                       set -e
                       git config merge.ours.driver true
                       git checkout master
-                      git tag -a "release-${BUILD_NUMBER}" -m "Release ${BUILD_NUMBER}"
+                      git tag -a "'release-${BUILD_NUMBER}'" -m "'Release ${BUILD_NUMBER}'"
                       git push origin master https://${GIT_USERNAME}:${GIT_TOKEN}@${env.GIT_URL} --tags
                   '''
               }
