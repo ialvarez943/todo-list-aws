@@ -104,8 +104,9 @@ pipeline {
                 echo "-------------------- Rest Test --------------------"
 				unstash name:'api_url'
 				sh '''
-					export API_URL="$(cat api_url.txt)"
-					bash pipelines/common-steps/integration.sh $BASE_URL
+					API_URL="$(cat api_url.txt)"
+					echo "$API_URL"
+					bash pipelines/common-steps/integration.sh "$API_URL"
 				'''
             }
             post {
