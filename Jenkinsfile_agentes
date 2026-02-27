@@ -38,10 +38,10 @@ pipeline {
 				sh 'hostname'
 				echo env.WORKSPACE
 				echo env.NODE_NAME
+				unstash name:'code'
 				echo "-------------------- Setup --------------------"
 				sh "bash pipelines/${env.PIPELINE_FOLDER}/setup.sh"
                 echo "-------------------- Static Test --------------------"
-				unstash name:'code'
                 sh "bash pipelines/${env.PIPELINE_FOLDER}/static_test.sh"
                 echo "-------------------- Unit Test --------------------"
                 sh "bash pipelines/${env.PIPELINE_FOLDER}/unit_test.sh"
@@ -98,14 +98,15 @@ pipeline {
 				sh 'hostname'
 				echo env.WORKSPACE
 				echo env.NODE_NAME
+				unstash name:'code'
 				echo "-------------------- Setup --------------------"
 				sh "bash pipelines/${env.PIPELINE_FOLDER}/setup.sh"
                 echo "-------------------- Rest Test --------------------"
-				unstash name:'code'
 				unstash name:'api_url'
 				sh '''
-					export API_URL="$(cat api_url.txt)"
-					bash pipelines/common-steps/integration.sh $BASE_URL
+					API_URL="$(cat api_url.txt)"
+					echo "$API_URL"
+					bash pipelines/common-steps/integration.sh "$API_URL"
 				'''
             }
             post {
