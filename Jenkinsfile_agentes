@@ -133,6 +133,8 @@ pipeline {
                     sh '''
                         #!/bin/bash
                         set -e
+						git remote set-url origin https://${GIT_USER}:${GIT_TOKEN}@${GIT_URL}
+						git fetch origin master:master
                         git config merge.ours.driver true
                         git checkout master
                         git clean -fd
