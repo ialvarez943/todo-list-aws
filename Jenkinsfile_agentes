@@ -80,8 +80,10 @@ pipeline {
                 sh "bash pipelines/common-steps/deploy.sh"
 				script {
                     def BASE_URL = sh( script: "aws cloudformation describe-stacks --stack-name ${env.STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey==`BaseUrlApi`].OutputValue' --region us-east-1 --output text > api_url.txt")
-                }
-				echo "API_URL=$(cat api_url.txt)"
+					sh '''
+						echo "API_URL=$(cat api_url.txt)"
+					'''
+				}
 				stash name: 'api_url', includes: 'api_url.txt'
             }
         }
