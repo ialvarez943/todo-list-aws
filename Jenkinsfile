@@ -93,7 +93,7 @@ pipeline {
                       git clean -fd
                       git merge origin/develop --no-ff -m "Merge develop a master"
                       git tag -af "release-${BUILD_NUMBER}" -m "Release ${BUILD_NUMBER}"
-                      git push origin master https://${GIT_USERNAME}:${GIT_TOKEN}@${GIT_URL} --tags
+                      git push https://${GIT_USER}:${GIT_TOKEN}@${GIT_URL} master --tags
                   '''
               }
           }
