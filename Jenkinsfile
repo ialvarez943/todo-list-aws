@@ -10,6 +10,7 @@ pipeline {
     GIT_BRANCH = 'develop'
     GIT_URL = 'github.com/ialvarez943/todo-list-aws.git'
     STACK_NAME = 'staging-todo-list-aws'
+    PIPELINE_FOLDER = 'PIPELINE-FULL-STAGING'
   }
 
   stages {
@@ -25,16 +26,16 @@ pipeline {
       stage('Setup') {
           steps{
               echo "-------------------- Setup --------------------"
-              sh "bash pipelines/PIPELINE-FULL-STAGING/setup.sh"
+              sh "bash pipelines/${env.PIPELINE_FOLDER}/setup.sh"
           }
       }
 
       stage('Static Test') {
           steps{
               echo "-------------------- Static Test --------------------"
-              sh "bash pipelines/PIPELINE-FULL-STAGING/static_test.sh"
+              sh "bash pipelines/${env.PIPELINE_FOLDER}/static_test.sh"
               echo "-------------------- Unit Test --------------------"
-              sh "bash pipelines/PIPELINE-FULL-STAGING/unit_test.sh"
+              sh "bash pipelines/${env.PIPELINE_FOLDER}/unit_test.sh"
           }
           post {
               always {
