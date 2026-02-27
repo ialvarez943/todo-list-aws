@@ -6,11 +6,11 @@ pipeline {
   }
 
   environment {
-    ENVIRONMENT = 'staging'
-    GIT_BRANCH = 'develop'
+    ENVIRONMENT = 'production'
+    GIT_BRANCH = 'master'
     GIT_URL = 'github.com/ialvarez943/todo-list-aws.git'
-    STACK_NAME = 'staging-todo-list-aws'
-    PIPELINE_FOLDER = 'PIPELINE-FULL-STAGING'
+    STACK_NAME = 'production-todo-list-aws'
+    PIPELINE_FOLDER = 'PIPELINE-FULL-PRODUCTION'
   }
 
   stages {
@@ -27,23 +27,6 @@ pipeline {
           steps{
               echo "-------------------- Setup --------------------"
               sh "bash pipelines/${env.PIPELINE_FOLDER}/setup.sh"
-          }
-      }
-
-      stage('Static Test') {
-          steps{
-              echo "-------------------- Static Test --------------------"
-              sh "bash pipelines/${env.PIPELINE_FOLDER}/static_test.sh"
-              echo "-------------------- Unit Test --------------------"
-              sh "bash pipelines/${env.PIPELINE_FOLDER}/unit_test.sh"
-          }
-          post {
-              always {
-                  recordCoverage(tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']])
-                  recordIssues(tools: [flake8(pattern: 'flake8.out')])
-                  recordIssues(tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')])
-                  junit 'result-test.xml'
-              }
           }
       }
 
@@ -75,28 +58,6 @@ pipeline {
                 always {
                     junit 'result-integration.xml'
                 }
-          }
-      }
-
-      stage("Promote") {
-          steps{
-              echo "-------------------- Promote --------------------"
-              withCredentials([usernamePassword(
-                  credentialsId: 'AWS',
-                  usernameVariable: 'GIT_USER',
-                  passwordVariable: 'GIT_TOKEN'
-              )]) {
-                  sh '''
-                      #!/bin/bash
-                      set -e
-                      git config merge.ours.driver true
-                      git checkout master
-                      git clean -fd
-                      git merge origin/develop --no-ff -m "Merge develop a master"
-                      git tag -af "release-${BUILD_NUMBER}" -m "Release ${BUILD_NUMBER}"
-                      git push https://${GIT_USER}:${GIT_TOKEN}@${GIT_URL} master --tags
-                  '''
-              }
           }
       }
   }
