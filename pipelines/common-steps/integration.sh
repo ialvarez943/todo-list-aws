@@ -4,7 +4,7 @@ source todo-list-aws/bin/activate
 set -x
 export BASE_URL=$1
 
-if[["$ENVIRONMENT" = "production"]]; then
+if[["$ENVIRONMENT" == "production"]]; then
     echo "Production tests"
     pytest -s test/integration/todoApiTest.py -m readonly --junitxml=result-integration.xml
 else
