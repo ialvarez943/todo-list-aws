@@ -6,12 +6,12 @@ pipeline {
     }
 
 	environment {
-		ENVIRONMENT = 'staging'
-		GIT_BRANCH = 'develop'
-		GIT_URL = 'github.com/ialvarez943/todo-list-aws.git'
-		STACK_NAME = 'staging-todo-list-aws'
-		PIPELINE_FOLDER = 'PIPELINE-FULL-STAGING'
-	}
+        ENVIRONMENT = 'production'
+        GIT_BRANCH = 'master'
+        GIT_URL = 'github.com/ialvarez943/todo-list-aws.git'
+        STACK_NAME = 'production-todo-list-aws'
+        PIPELINE_FOLDER = 'PIPELINE-FULL-PRODUCTION'
+    }
 
 	stages {
 
@@ -27,35 +27,6 @@ pipeline {
 				stash name: 'code', includes: '**'
 			}
       	}
-
-		stage('Static Test') {
-			agent {
-				label 'agent1'
-			}
-            steps {
-				echo "-------------------- INFO --------------------"
-				sh 'whoami'
-				sh 'hostname'
-				echo env.WORKSPACE
-				echo env.NODE_NAME
-				unstash name:'code'
-				echo "-------------------- Setup --------------------"
-				sh "bash pipelines/${env.PIPELINE_FOLDER}/setup.sh"
-                echo "-------------------- Static Test --------------------"
-                sh "bash pipelines/${env.PIPELINE_FOLDER}/static_test.sh"
-                echo "-------------------- Unit Test --------------------"
-                sh "bash pipelines/${env.PIPELINE_FOLDER}/unit_test.sh"
-            }
-            post {
-                always {
-                    recordCoverage(tools: [[parser: 'COBERTURA', pattern: 'coverage.xml']])
-                    recordIssues(tools: [flake8(pattern: 'flake8.out')])
-                    recordIssues(tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')])
-                    junit 'result-test.xml'
-					cleanWs()
-                }
-            }
-        }
 
 		stage("Build") {
             steps {
@@ -116,33 +87,13 @@ pipeline {
                 }
             }
         }
-
-		stage("Promote") {
-            steps {
-				echo "-------------------- INFO --------------------"
-				sh 'whoami'
-				sh 'hostname'
-				echo env.WORKSPACE
-				echo env.NODE_NAME
-                echo "-------------------- Promote --------------------"
-                withCredentials([usernamePassword(
-                    credentialsId: 'AWS',
-                    usernameVariable: 'GIT_USER',
-                    passwordVariable: 'GIT_TOKEN'
-                )]) {
-                    sh '''
-                        #!/bin/bash
-                        set -e
-                        git config merge.ours.driver true
-                        git checkout master
-                        git clean -fd
-                        git merge origin/develop --no-ff -m "Merge develop a master"
-                        git tag -af "release-${BUILD_NUMBER}" -m "Release ${BUILD_NUMBER}"
-                        git push https://${GIT_USER}:${GIT_TOKEN}@${GIT_URL} master --tags
-                    '''
-                }
-            }
-        }
 	}
+
+	post { 
+        always { 
+            echo 'Clean env: delete dir'
+            cleanWs()
+        }
+    }
 }
 
