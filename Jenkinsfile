@@ -85,7 +85,8 @@ pipeline {
                   usernameVariable: 'GIT_USER',
                   passwordVariable: 'GIT_TOKEN'
               )]) {
-                  sh ''' 
+                  sh '''
+                      #!/bin/bash
                       set -e
                       git config merge.ours.driver true
                       git checkout master
