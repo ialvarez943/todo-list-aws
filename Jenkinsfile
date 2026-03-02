@@ -19,6 +19,8 @@ pipeline {
             steps {
                 echo "-------------------- Get Code --------------------"
                 git branch: "${env.GIT_BRANCH}", url: "https://${env.GIT_URL}"
+                echo "-------------------- Get Configuration --------------------"
+                sh "wget https://raw.githubusercontent.com/ialvarez943/todo-list-aws-config/refs/heads/${env.ENVIRONMENT}/samconfig.toml"
             }
         }
 
