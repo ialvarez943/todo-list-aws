@@ -19,7 +19,6 @@ pipeline {
             steps {
                 echo "-------------------- Get Code --------------------"
                 git branch: "${env.GIT_BRANCH}", url: "https://${env.GIT_URL}"
-                stash name: 'code', includes: '**'
             }
         }
 
